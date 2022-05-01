@@ -599,7 +599,144 @@ print("".join(S2))
 #整数 N が 200 の倍数であれば、N を 200 で割る。
 #そうでなければ、整数 N を、N の後ろに文字列として 200 を付け加えた整数に置き換える。
 #例えば、7 を置き換えると 7200 に、1234 を置き換えると 1234200 になります。
+N,K =  map(int,input().split())
+for i in range(K):
+    if N%200 == 0:
+        N = N//200
+    else:
+        N = N*1000+200
+print(N)
+#これは書けたと思う。
+#ABCコンテスト200C問題
+# 200 という整数が大好きなりんごさんのために、次の問題を解いてください。
+# N 個の正整数からなる数列 A が与えられるので、以下の条件をすべて満たす整数の組 (i,j) の個数を求めてください。
+# 1≤i<j≤N
+# Ai−Ajは200の倍数である。
+# 「Ai−Ajが 200 の倍数である」ということは、「Aiを 200 で割った余りと Ajを 200 で割った余りが一致する」と言い換えられます。
+# なので、求めるものは、 Aiを 200 で割った余りと Ajを 200 で割った余りが一致するような (i,j) (1≤i<j≤N) の組の通り数(位置が異なる 2 つの要素の選び取り方の場合の数)と言い換えられます。
+# まず、数列 Aiに 200 で割った余りが k であるような要素がいくつ含まれるかを求めます。今回の問題では愚直にループを回して数えてもよいですが、バケットソートの要領で調べると高速です。
+# 数列 Aiに 200 で割った余りが k であるような要素が X 個含まれるとします。このとき、この中から数列 A での位置が異なる 2 つの要素を選び取る場合の数は、X×(X−1)/2通りです。この式は X=0,1 の場合でも適用できます。
+# これを 0 以上 199 以下の全ての整数 k について足し合わせると、この問題を解くことができます。
+# 最終的な計算量は O(N) です。
+N = int(input())
+A = list(map(int, input().split()))
+B = [0]*200
+ans = 0
+for a in A:
+    B[a%200] += 1
+for b in B:
+    if b!=0:
+        ans += (b*(b-1))//2#切り捨て
+    else:
+        pass
+print(ans)
 
+#ABCコンテスト200D問題
+# N 個の正整数からなる数列 A=(A1,A2,…,AN) が与えられます。 以下の条件を全て満たす 2 つの数列 B=(B1,B2,…,Bx), C=(C1,C2,…,Cy) が存在するか判定し、存在する場合はひとつ出力してください。
+# 1≤ x,y≤N
+# 1≤B1<B2<⋯<Bx≤N
+# 1≤C1<C 2<⋯<Cy≤N
+# B と C は、異なる数列である。
+# x≠y のとき、または、ある整数 i (1≤ i≤ min(x,y)) が存在して Bi≠Ciであるとき、B と C は異なるものとする。
+# AB1+AB2+⋯+ABxを 200 で割った余りと AC1+AC2+⋯+ACyを 200 で割った余りが等しい。
+# 解説
+# 実は、数列 B (または C )の候補を 201 通り探索すれば、その中で必ず条件を満たす数列の組を見つけることができます。
+# X+1 羽の鳩を X 個の鳥かごに入れるとき、 2 羽以上の鳩が入った鳥かごが少なくとも 1 つ以上存在する
+# これは、「鳩ノ巣原理」と呼ばれます。今回の問題では、
+# 201 個の数列を、含まれる要素の総和を 200 で割った余りという 200 個のグループに分けるとき、 2 個以上の数列を含んだグループが少なくとも 1 つ以上存在する
+# と言い換えられます。
+# 数列の候補は全部で 2^N−1 通りあるので、 N≥8 のケースについては、必ず答えが存在することが分かります。
+# では、どのようにして数列を 201 通り探索すればよいでしょうか。
+# 例えば、数列のうち先頭の min(N,8) 要素を取り出して、その中で数列の候補をbit全探索するという方法があります。 N≤8 の場合は通常の全探索と変わらないので正しく動作します。N≥9 の場合でも、 8 要素の中での数列の候補は 255 通りあるので、答えを 1 組見つけるには十分です。
+# このbit全探索は、定数時間で動作します。
+#!/usr/bin/env python3
+import sys
+from bisect import bisect, bisect_left, bisect_right, insort, insort_left, insort_right  # type: ignore
+from collections import Counter, defaultdict, deque  # type: ignore
+from math import gcd  # type: ignore
+from heapq import heapify, heappop, heappush, heappushpop, heapreplace, merge  # type: ignore
+from itertools import accumulate, combinations, permutations, product  # type: ignore
+
+def LI(): return list(map(int, sys.stdin.buffer.readline().split()))
+def MI(): return map(int, sys.stdin.buffer.readline().split())
+def I(): return int(sys.stdin.buffer.readline())
+def LS(): return sys.stdin.buffer.readline().rstrip().decode("utf-8").split()
+def S(): return sys.stdin.buffer.readline().rstrip().decode("utf-8")
+def IR(n): return [I() for _ in range(n)]
+def LIR(n): return [LI() for _ in range(n)]
+def SR(n): return [S() for _ in range(n)]
+def LSR(n): return [LS() for _ in range(n)]
+def SRL(n): return [list(S()) for _ in range(n)]
+def MSRL(n): return [[int(i) for i in list(S())] for _ in range(n)]
+
+n = I()
+a = LI()
+d = {}
+mod = 200
+for i in range(1,min(2**n,202)):
+    cand = []
+    summod = 0
+    for j in range(n):
+        if i & (1<<j):
+            cand.append(j+1)
+            summod += a[j]
+            summod %= mod
+    if d.get(summod, False):
+        print('Yes')
+        print(len(cand),*cand)
+        print(len(d[summod]),*d[summod])
+        exit()
+    else:
+        d[summod] = cand
+print('No')
+
+#ABCコンテスト201B問題
+# AtCoder国には N 個の山があり、i 個目の山の名前は Si, 高さは Tiです。
+# 2番目に高い山の名前を答えてください。N 個の山の名前、高さはそれぞれ相異なることが保証されます。
+#N 個の山を (高さ→名前) の順に優先度を付けて降順にソートした後、先頭から 2 番目の山の名前を出力すればいいです。
+N = int(input())
+m = []
+for i in range(n):
+    s_, t_ = input().split()
+    m.append([int(t_),s_])
+m.sort(reverse = True)#reverseキーワード引数はソートを昇順／降順に行うかどうかを指定するものだ。これをTrueに指定すると、ソートの結果は通常とは逆の順序（降順）になる。
+print(m[1][1])
+
+#ABCコンテスト201C問題
+#高橋くんは、暗証番号を忘れてしまいました。暗証番号は 0 から 9 までの数字のみからなる 4 桁の文字列で、0 から始まる場合もあります。
+# 0 から 9 までの各数字について、高橋くんは以下のように記憶しています。彼の記憶は長さ 10 の文字列 S0S1…S9によって表されます。
+# Siが o のとき : 数字 i は暗証番号に確実に含まれていた。
+# Siが x のとき : 数字 i は暗証番号に確実に含まれていなかった。
+# Siが ? のとき : 数字 i が暗証番号に含まれているか分からない。
+# 高橋くんが忘れてしまった暗証番号としてあり得るものは何通りありますか？
+#回答
+# 0000 から 9999 までの 10^4通りの暗証番号それぞれについて高橋くんの記憶に合致するかを判定し、合致するものの個数を数えることでこの問題を解くことができます。
+# 実装の際は、0000 から 9999 までの暗証番号を「0 以上 9999 以下の整数に leading zero を付けたもの」と見做すことで簡潔なコードを書くことができます。例えば、1 に leading zero を付けて生成される暗証番号は 0001, 132 に leading zero を付けて生成される暗証番号は 0132 です。
+s = input()
+c_n = s.count('o')
+t_n = s.count('?')
+if c_n > 4:
+    print(0)
+    exit()
+if c_n == 0 and t_n == 0:
+    print(0)
+    exit()
+
+l_1 = []
+l_2 = []
+for i,a in enumerate(s):
+    if a == 'o':
+        l_1.append(i)
+    elif a == '?':
+        l_2.appedn(i)
+result = 0
+for n_1 in l_1 + l_2:
+    for n_2 in l_1 + l_2:
+        for n_3 in l_1 + l_2:
+            for n_4 in l_1 + l_2:
+                if set([n_1, n_2, n_3, n_4]) & set(l_1) == set(l_1):
+                    result += 1
+print(result)
 
 
 
