@@ -738,9 +738,103 @@ for n_1 in l_1 + l_2:
                     result += 1
 print(result)
 
+#ABC202B問題
+# 0、1、6、8、9 からなる文字列 S が与えられます。
+# S を 180 度回転したものを出力してください。すなわち、S に次の操作を施してできる文字列を出力してください。
+# S を反転する。
+# 0 を 0 に、1 を 1 に、6 を 9 に、8 を 8 に、9 を 6 に変換する。
+S = list(str(input()))
+for i in range (len(S)):
+    if S[i] == '6':
+        S[i] = '9'
+    elif S[i] == '9':
+        S[i] = '6'
+    else:
+        pass
+S=reversed(S)
+print(''.join(S))
 
+#ABC202C問題
+# 1 以上 N 以下の整数からなる長さ N の数列 A=(A1,A2,…,AN),B=(B1,B2,…,BN),C=(C1,C2,…,CN) が与えられます。
+# 1 以上 N 以下の整数 i,j の組 (i,j) であって、Ai=BCjとなるものの総数を求めてください。
+#自分の回答
+N = int(input())
+A = [0] * N
+B = [0] * N
+C = [0] * N
+for i in range(N):
+    A[i], B[i], C[i] = map(int, input().split())
+ans = 0
+for i in range(N):
+    for j in range(N):
+        if A[i] == B[C[j]]:
+            ans += 1
+        else:
+            pass
+print(ans)
+#解答
+# iを固定したときに、Ai=BCjとなる j の個数が高速に求められればよいです。これを前もって計算しておく方法を考えます。
+# Bkの値は 1 以上 N 以下であるので、長さ N 程度の配列 countxを用意し、j の値を全て試すことによって、各 1≤x≤N について BCj=x となる j の個数を countxとして保持しておくことが出来ます。
+# 各 i について countAiを足し合わせたものが答えとなります。答えは最大で N^2になるため、32 bit 整数に収まらないことに注意してください。
+# このように、「同じような処理を何度も行う」ような問題においては、「前もって計算しておく」という方法がうまくいくことがしばしばあります。
+n = int(input())
+a = list(map(int,input().split()))
+b = list(map(int,input().split()))
+c = list(map(int,input().split()))
+countb=[0]*n
+ans = 0
+for i in range(N):
+    countb[b[c[i]-1]-1] += 1
+for i in range(n):
+    ans +=countb[a[i]-1]
+print(ans)
 
+#ABC203B問題
+#AtCoder マンションは 1 階から N 階までの N 階建てのマンションです。 各階には K 室の部屋があり、1 号室から K 号室まで番号が振られています。
+# ここで N,K は 1 桁の整数であり、 i 階の j 号室の部屋番号は i0j で表されます。 例えば、1 階の 2 号室の部屋番号は 102 です。
+# マンションの管理人である高橋君は各部屋番号を 3 桁の整数とみなし、 AtCoder マンションに存在するすべての部屋について足しあわせたらいくつになるのか興味を持ちました。 その値を求めてください。
+N,K = map(int,input().split())
+ans = 0
+for i in range(1,N+1):
+    for j in range(1,K+1):
+        ans += i*100+j
+print(ans)
+#ABC203C問題
+# 10^100+1 個の村があり、それぞれ村 0, 村 1, …, 村 10^100と番号がついています。
+# 0 以上 10^100−1 以下の全ての整数 i について、村 i で 1 円を払う事で村 (i+1) に移動することができます。 それ以外の移動方法はありません。
+# 太郎君は初め K 円を持った状態で村 0 におり、その後、可能な限り大きな番号の村まで進もうとします。
+# 太郎君には N 人の友達がいます。i 人目の友達は村 Aiにいて、太郎君が村 Aiに着いたときに Bi円を太郎君に渡します。
+# 太郎君が最終的にたどり着く村の番号を求めてください。
+#自分の回答
+N,K = map(int, input().split())
+A = [0]*N
+B = [0]*N
+for i in range(N):
+    A[i],B[i] = map(int, input().split())
 
+for i in range(1,N+1):
+    if K+sum(B[:i]) < A[i]:
+        print(K+sum(B[:i]))
+    else:
+        pass
+#解答
+def main():
+    N, K = map(int, input().split())
+    mat = []
+    for _ in range(N):
+        a, b = map(int, input().split())
+        mat.append((a, b))
+    mat.sort()  # aが小さい順にソートされます
+    now = K  # はじめの所持金で村Kまで行けます
+    for i in range(N):
+        a, b = mat[i]
+        if now >= a:
+            # 村A_i の人が B_i円 くれるので、即座に消費してB_i進みます
+            now += b
+        else:
+            # 村A_i にたどり着く前に所持金が尽きたので、ここでおしまいです
+            break
+    print(now)
 
-
-
+if __name__ == '__main__':
+    main()
