@@ -1002,6 +1002,9 @@ print(cnt)
 from collections import Counter #collections.Counterは標準モジュールの一つで、リストの各要素の数え上げが出来ます。また、返り値であるCounterクラスは辞書型のサブクラスということで、辞書型と同じ操作ができます。
 N = int(input())
 cnt = Counter(map(int, input().split()))
+# 辞書型（dictionary）をリスト型で取得する 
+#for キーの変数,値の変数 in 辞書型.items():
+    #処理
 ans = N * (N - 1) // 2
 for a, c in cnt.items():
     ans -= c * (c - 1) // 2
