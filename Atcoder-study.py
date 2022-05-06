@@ -1226,3 +1226,46 @@ for i in range(n - k + 1):
 	ans = max(ans, len(mp))
 #	print(mp)
 print(ans)
+
+#211B
+# 4 つの文字列 S1,S2,S3,S4が与えられます。
+# この中に、H , 2B , 3B , HR がそれぞれ 1 つずつあるか判定してください。
+# ただし、全ての Siは H , 2B , 3B , HR のいずれかと一致します。
+#解答１
+S = set()
+for _ in range(4):
+    S.add(input())
+print('Yes' if len(S) == 4 else 'No')
+#解答2
+S1 = input()
+S2 = input()
+S3 = input()
+S4 = input()
+S = [S1,S2,S3,S4]
+print("Yes" if len(set(S)) == 4 else "No")
+#211C
+# 文字列 S が与えられます。
+# このうち 8 文字を選び下線を引き、下線を引いた文字が左から順に c , h , o , k , u , d , a , i となるようにする方法は何通りありますか？
+# ただし答えは非常に大きくなる可能性があるので、(10^9+7) で割った余りを出力してください。
+# 動的計画法(DP)を用います。
+# dp[i][j] を、「 S の i 文字目までを使って、chokudai の j 文字目まで選択する方法」と定義します。
+# ここで、N=∣S∣ , T=chokudai として、以下の漸化式が成り立ちます。
+# dp[i][j]= 
+# ①1(j=0)
+# ②0(i=0,1≤j≤8)
+# ③dp[i−1][j](1≤i≤N,1≤j≤8,S[i]≠T[j])
+# ④dp[i−1][j]+dp[i−1][j−1](1≤i≤N,1≤j≤8,S[i]=T[j])
+MOD = 10**9 + 7
+S = input()
+T = "chokudai"
+dp = [[0]*9 for _ in range(len(S)+1)]
+dp[0][0] = 1
+for i in range(1, len(S)+1):
+  dp[i][0] = 1
+  for j in range(1, 8+1):
+    if S[i-1] == T[j-1]:
+      dp[i][j] = (dp[i-1][j] + dp[i-1][j-1]) % MOD
+    else:
+      dp[i][j] = dp[i-1][j]
+      
+print(dp[len(S)][8])
