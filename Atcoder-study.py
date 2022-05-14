@@ -1368,6 +1368,42 @@ if r!=h:
 	ans += 1
 print(ans)
 
+#ABC251A
+S = input()
+if len(S) == 1:
+    print(S*6)
+elif len(S) == 2:
+    print(S*3)
+elif len(S) == 3:
+    print(S*2)
+#ABC251B
+N,W = map(int,input().split())
+A = list(map(int,input().split()))
+A.sort(N)
+S = list()
+ans = 0
+for i in range(N):
+    if A[i] <= W:
+        ans += 1
+        S.append(A[i])
+    else:
+        continue
+for i in range(N):
+    for j in range(i+1,N):
+        if A[i]+A[j] <= W and (A[i]+A[j] not in S):
+            ans += 1
+            S.append(A[i]+A[j])
+        else:
+            continue
+for i in range(N):
+    for j in range(i+1,N):
+        for k in range(j+1,N):
+            if A[i]+A[j]+A[k]<= W and (A[i]+A[j]+A[k] not in S):
+                ans += 1
+                S.append(A[i]+A[j]+A[k])
+            else:
+                continue
+print(ans)
 
 
 
