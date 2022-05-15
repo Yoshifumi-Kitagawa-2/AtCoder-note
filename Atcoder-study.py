@@ -1499,3 +1499,24 @@ for i in range(N):
 		best = i
 		best_score = T[i]
 print(best+1)
+
+#ABC216B
+#N 人の人がいます。i(1≤i≤N) 人目の人の姓は Si、名は Tiです。
+#同姓同名であるような人の組が存在するか、すなわち 1≤i<j≤N かつ Si=Sjかつ Ti=Tjを満たすような整数対 (i,j) が存在するか判定してください。
+#制約
+#2≤N≤1000
+#N は整数
+# Si,Tiは英小文字のみからなる長さ 1 以上 10 以下の文字列
+N = int(input())
+S,T = [],[]
+for i in range(N):
+    s,t = input().split()
+    S.append(s)
+    T.append(t)
+
+for i in range(N):
+    for j in range(i+1,N):
+        if (S[i] == S[j]) and (T[i] == T[j]):
+            print('Yes')
+            exit()
+print('No')
