@@ -1404,6 +1404,98 @@ for i in range(N):
             else:
                 continue
 print(ans)
+#ABC251B
+#おもり 1, おもり 2, …, おもり N の N 個のおもりがあります。おもり i の重さは Aiです。
+#以下の条件を満たす正整数 n を 良い整数 と呼びます。
+#3 個以下 の異なるおもりを自由に選んで、選んだおもりの重さの和を n にすることができる。
+#W 以下の正整数のうち、良い整数は何個ありますか？
+#解説
+#まず、この問題文をプログラミング的な手続きに言い換えると次のような問題になります。この手順を十分高速に計算できればこの問題を解くことができます。
+#1 以上 W 以下のすべての整数について「n はよい整数か」を管理するフラグ用の配列 flag を用意する。flag ははじめ false で初期化されている。
+#3 個以下であるおもりの集合全てを調べる。各集合についておもりの重さの和 w を求める。そして、w が W 以下ならば flag[w] を true にする。
+#最終的に true であるフラグの個数が答えとなる。
+#上の手順の中で一番難しいのが「 3 個以下であるおもりの集合全てを調べる」という部分で、ここで探索の方法を間違えると計算量が膨大になって TLE しています。
+#この部分は「3 個以下である」を「1 個 または 2 個または 3 個である」と言い換えるのがポイントです。「おもりの個数がちょうど x 個である集合」の場合は 以下のような for-loop を用いた実装で O(N 
+#x) で計算することができるので、このように言い換えたあと 1 個の場合, 2 個の場合, 3 個の場合を別々に計算すれば、この問題は for-loop で実装できる問題に帰着します。
+n,w = map(int,input().split())
+a = list(map(int,input().split()))
+size = len(a)
+good = [0]*(w+1)
+for i in range(size):
+	if a[i] <= w:
+		good[a[i]]=1
+ for i in range(size - 1):
+	for j in range(i+1,size):
+		total = a[i] + a[j]
+		if total <= w:
+			good[total] =1
+for j in range(size - 2):
+	for j in range(i+1,size-1):
+		for k in range(j+1,size):
+			total = a[i]+a[j]+a[k]
+			if total <= w:
+				good[total] = 1
+print(sum(good))
+#ABC251C
+#ポエムオンラインジャッジ (Poem Online Judge, 以下 POJ と表記) は提出された文字列に得点をつけるオンラインジャッジです。
+#POJ に N 回の提出がありました。早い方から i 番目の提出では文字列 Siが提出されて、得点は Tiでした。(同じ文字列が複数回提出される場合もあります)
+#ただし、POJ では 同じ文字列を提出しても得点が等しいとは限らない のに注意してください。
+#N 回の提出のうち、その提出よりも早い提出であって文字列が一致するものが存在しないような提出を オリジナル であると呼びます。
+#また、オリジナルな提出の中で最も得点が高いものを 最優秀賞 と呼びます。ただし、そのような提出が複数ある場合は、最も提出が早いものを最優秀賞とします。
+#最優秀賞は早い方から何番目の提出ですか？
+#解説
+#この問題はいくつかの解法が考えられると思いますが、例えば for-loop を用いて前から調べていく方法を使って解けないか考えてみましょう。すると、一例として次のような手順が考えられます。
+#暫定的に優秀な提出 best、およびその得点 best_score を変数として用意する。
+#1 番目の提出から昇順に調べていく。i 番目の提出を調べるときは、まずその提出がオリジナルかを判定する。
+#もしオリジナルであれば、得点 T_i が best_score より大きいかを判定する。
+#大きければ best を i に、best_score を T_i に更新する。
+#そうでなければ何もしない。
+#もしオリジナルでなければ何もしない。
+#これを 2 重の for-loop を用いて Python でナイーブに実装すると以下のようになります。
+#しかしこのままでは提出 i がオリジナルか判定する部分に O(N) かかっており、全体で O(N^2)時間かかりTLE してしまいます。
 
+#TLEする解法
+N = int(input())
+S,T = [],[]
+for i in range(N):
+	s,t = input().split()
+	S.append(s)
+	T.append(int(t))
+best = -1
+best_score = -1
 
+for i in range(N):
+	original = True
+	for j in range(i):
+		if S[i] == S[j]:
+			original = False
+	if original = False:
+		continue
+	if best_score < T[i]:
+		best = i
+		best_score = T[i]
+print(best+1)
+#そこで、今まで出てきた文字列を Python の set や C++ の std::set のような集合型や連想配列(辞書)を用いて管理しましょう。
+#集合型は次の操作を O(1) あるいは O(log(集合の要素数)) で行うことができるデータ構造です。
+#ある文字列が集合に含まれているか判定する
+#集合を文字列に追加する
+#このようなデータ構造を用いることで、ボトルネックの部分であった「文字列が前に登場したか判定する」部分を高速に行うことができるのでACすることができます。
+N = int(input())
+S,T = [],[]
+for i in range(N):
+	s,t = input().split()
+	S.append(s)
+	T.append(int(t))
 
+best = -1
+best_score = -1
+
+appeared = set()
+for i in range(N):
+	if S[i] in appeared:
+		continue
+	appeared.add(S[i])
+	if best_score < T[i]:
+		best = i
+		best_score = T[i]
+print(best+1)
