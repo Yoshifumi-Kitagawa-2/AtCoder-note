@@ -1521,26 +1521,61 @@ for i in range(N):
             exit()
 print('No')
 
-##全探索
-##二部探索
-##組み合わせの全探索
-##素数判定法
-##約数列挙
-##ユークリッドの互助法
+##全探索：O(2^N)/O(N^2)
+#全探索とは、あり得るすべてのパターンをしらみつぶしに調べる方法
+##二分探索:O(logN)
+##組み合わせの全探索:O(2^N)
+##素数判定法：O(√N)
+
+#高速な素数判定法
+#実は2からN-1まで全部を調べる必要はなく、√N以下まで調べて割り切れなければ素数だと言い切って良い→このアルゴリズムの計算量はO(√N)
+def isprime(N):
+    LIMIT = int(N**0.5)
+    for i in range(2,LIMIT+1):
+        if N%i == 0:
+            return False
+    return True
+
+N = int(input())
+if isprime(N):
+    print("prime")
+else:
+    print("not prime")
+
+##約数列挙:
+#約数列挙
+#素数判定法と似たような次の手順でNの約数を列挙出来る
+#1:i=1,2,3,・・・√N
+#2:割り切れる場合、iとN/iを約数に追加する
+N=int(input())
+#すべての約数を求め、配列divisorsに入れる
+LIMIT=int(N**0.5)
+divisors=[]
+for i in range(1,LIMIT+1):
+    if N%i == 0:
+        divisors.append(i)
+        if i != N//i:
+            divisors.append(N//i)
+#小さい順に並べ替え→出力
+divisors.sort()
+for i in divisors:
+    print(i)
+
+##ユークリッドの互助法:O(logN)
 ##モンテカルロ法
-##選択ソート
+##選択ソート:O(N^2)
 ##再帰関数
 ##分割統治法
 ##マージソート
 ##動的計画法
 ##配列の二分探索
 ##計算幾何
-##累積話
+##累積和:0(N)
 ##ニュートン法
-##エラトステネスのふるい
+##エラトステネスのふるい:O(NloglogN)
 ##深さ優先探索
 ##幅優先探索
-##繰り返し二乗法
+##繰り返し二乗法:O(logN)
 ##行列累乗の計算
 ##勾配降下法
 ##貪欲法
