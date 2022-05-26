@@ -1838,7 +1838,95 @@ print(answer)
 
 
 ##計算幾何
-##累積和:0(N)
+#点と線分の距離
+#二次元平面上の点A,B,C。A(ax,ay)、B(bx,by)、C(cx,cy)。点Aと線分BC上の点の最短距離を求めよ。
+#パターン1 角ABCが90度より大きい→AB
+#パターン2 角ABC、ACBが共に90度より小さい→垂線の足H、AH=面積S÷BC
+#パターン3 角ACBが90度より大きい→AC
+import math
+#入力
+ax,ay = map(int,input().split())
+bx,by = map(int,input().split())
+cx,cy = map(int,input().split())
+#ベクトルBA、BC、CA、CBの成分表示を求める
+BAx, BAy = ax - bx, ay - by
+BCx, BCy = cx - bx, cy - by
+CAx, CAy = ax - cx, ay - cy
+CBx, CBy = bx - cx, by - cy
+#どのパターンに当てはまるか判定する
+pattern = 2
+if BAx * BCx + BAy * BCy < 0:
+	pattern = 1
+if CAx * CBx + CAy * CBy < 0:
+	pattern = 3
+
+#点と直線の距離を求める
+if pattern == 1:
+    answer = math.sqrt(BAx ** 2 + BAy ** 2)
+if pattern == 3:
+	answer = math.sqrt(CAx ** 2 + CAy ** 2)
+if pattern == 2:
+	S = abs(BAx * CAy - BAy * CAx)
+	BCLength = math.sqrt(BCx ** 2 + BCy ** 2)
+	answer = S / BCLength
+
+# 答えの出力
+print("%.12f" % answer)
+
+##階差と累積和:0(N)
+#整数A1,A2,・・・ANに対し、階差Bi=Ai-Ai-1/累積和Bi=A1+A2+・・・+Ai
+#階差と累積和
+#来場者数を計算する
+#遊園地にはN日間にわたってイベントが開催され、i日目にはAi人が来場した。以下の合計Q個の質問に答えるプログラムを作成せよ。
+#1個目：L1日目〜R1日目までの来場者数は？
+#2個目：L2日目〜R2日目までの来場者数は？
+#Q個目：LQ日目〜RQ日目までの来場者数は？
+#x日目からy日目までの合計来場者数=[y日目までの合計来場者数]-[x-1日目までの合計来場者数]
+#言い換えると、[A1,A2,・・・,AN]の累積和[B1,B2,・・・BN]を考えたとき、j個目の質問の答えがBRj-BLj-1で表される。
+N,Q = map(int,input().split())
+A = list(map(int, input().split()))
+L = [None]*Q
+R = [None]*Q
+for j in range(Q):
+    L[j],R[j] = map(int,input().split())
+B = [None]*(N+1)
+B[0]=0
+for i in range(N):
+    B[i+1] = B[i]+A[i]
+
+for j in range(Q):
+    print(B[R[j]]-B[L[j]-1])
+
+#降雪のシミュレーション
+#ALGO国はN個の区画に分かれていて、西から順に1〜N
+#これからQ日間にわたって雪が降り続け、i日目に区画Li、、、、Riに積雪がXicm増加
+#雪が降り終わった後の積雪の大小関係を示す、N-1文字を出力するプログラムを作成せよ。
+#階差を使う。
+# 入力
+N, Q = map(int, input().split())
+L = [ None ] * Q
+R = [ None ] * Q
+X = [ None ] * Q
+for i in range(Q):
+	L[i], R[i], X[i] = map(int, input().split())
+
+# 階差の計算
+B = [ 0 ] * (N + 2)
+for i in range(Q):
+	B[L[i]] += X[i]
+	B[R[i] + 1] -= X[i]
+
+# 答えを計算して出力
+answer = ""
+for i in range(2, N + 1):
+	if B[i] > 0:
+		answer += "<"
+	if B[i] == 0:
+		answer += "="
+	if B[i] < 0:
+		answer += ">"
+print(answer)
+
 ##ニュートン法
 ##エラトステネスのふるい:O(NloglogN)
 ##深さ優先探索
