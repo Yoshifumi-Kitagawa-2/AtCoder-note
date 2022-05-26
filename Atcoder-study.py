@@ -1928,7 +1928,50 @@ for i in range(2, N + 1):
 print(answer)
 
 ##ニュートン法
+#ニュートン法で√2を求める！
+r = 2.0
+a = 2.0
+repeats = 5 
+
+for i in range(1,repeats+1):
+    # 点 (a, f(a)) の x 座標と y 座標を求める
+	zahyou_x, zahyou_y = a, a * a
+	
+	# 接線の式 y = sessen_a * x + sessen_b を求める
+	sessen_a = 2.0 * zahyou_x
+	sessen_b = zahyou_y - sessen_a * zahyou_x
+	
+	# 次の a の値 next_a を求める
+	next_a = (r - sessen_b) / sessen_a
+	print("Step #%d: a = %.12f -> %.12f" % (i, a, next_a))
+	a = next_a
+
+
 ##エラトステネスのふるい:O(NloglogN)
+#エラトステネスのふるい：N以下の素数を列挙する方法でO(NlogN)
+#手順
+#最初、整数2,3,4,・・・Nを書く
+#無印である最小の数「2」に丸をつけ、他の2の倍数にバツをつける
+#無印である最小の数「3」に丸をつけ、他の3の倍数にバツをつける
+#無印である最小の数「5」に丸をつけ、他の5の倍数にバツをつける
+#以下同様に、無印である最小の数にマルをつけ、その倍数にバツをつける操作を繰り返す。
+#√N以下の全ての整数に何らかの印が付けられた時点で、操作を終了する。
+#マルが付けられている整数、あるいは無印のまま残った整数だけが素数である。
+N = int(input())
+prime = [True]*(N+1)
+#エラトステネスのふるい
+LIMIT = int(N**0.5)
+for i in range(2,LIMIT+1):
+    if prime[i] == True:
+        #x = 2i,3i,4i・・・とN以下の間ループし続ける
+        for j in range(2*i,N+1,i):
+            prime[j]=False
+#N以下の素数を小さい順に出力
+for i in range(2,N+1):
+    if prime[i]==True:
+        print(i)
+
+
 ##深さ優先探索
 ##幅優先探索
 ##繰り返し二乗法:O(logN)
