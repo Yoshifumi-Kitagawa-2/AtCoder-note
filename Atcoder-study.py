@@ -1562,9 +1562,150 @@ for i in divisors:
     print(i)
 
 ##ユークリッドの互助法:O(logN)
+#ユークリッド互除法
+#自然数AとBの最大公約数を求める
+#1:大きい方の数を「大きいほうを小さい方で割った余り」に書き換えるという操作を繰り返す
+#2:片方が0になったら操作を終了する。もう片方の数が最大公約数
+def GCD(A,B):
+    while A>=1 and B>=1:
+        if A<B:
+            B=B%A
+        else:
+            A=A%B
+    if A>=1:
+        return A
+    return B
+
+A,B =map(int,input().split())
+print(GCD(A,B))
+
+#場合の数とアルゴリズム
+n個のモノからr個を並べる方法：nPr=n×(n-1)×(n-2)×・・・×(n-r+1)
+n個のモノからr個を選ぶ方法:n!/r!(n-r)!
+
+N枚のカードがあり、左からi番目のカードには整数Aiが書かれている。カードを5枚選ぶ方法のうち、選んだカードに書かれた整数の和がちょうど1000となるものは何とおり？
+# 注意
+# Python で提出すると、N = 100 では実行に 10 秒程度かかり、TLE（実行時間制限オーバー）になります。
+# 一方、同じプログラムを PyPy3 で提出すると、実行に 0.5 秒程度しかかからず、AC（正解）することができます。
+100C5=約75300000 <=10^9をはるかに下回る
+N=int(input())
+A=list(map(int, input().split()))
+answer = 0
+for i in range(0, N):
+	for j in range(i + 1, N):
+		for k in range(j + 1, N):
+			for l in range(k + 1, N):
+				for m in range(l + 1, N):
+					if A[i] + A[j] + A[k] + A[l] + A[m] == 1000:
+						answer += 1
+
+# 出力
+print(answer)
+
+##確率・期待値とアルゴリズム
+#期待値=1回の試行で得られる平均的な値のこと
+#期待値の線形性
+N=int(input())
+B=list(map(int,input().split()))
+R=list(map(int,input().split()))
+#出目の和の期待値=青の出目の期待値+赤の出目の期待値
+for i in range(N):
+    b=0
+    b += B[i]
+for i in range(N):
+    r=0
+    r += R[i]
+x = (b+r)/N
+print(N)
+
+#選択式の試験でランダムに答える
+#問題
+#ある国語のテストの問題はN問からなり、すべて選択式。i問目はPi個の選択肢から1つの正解を選ぶ形式で、配点はQi
+N = int(input())
+P = list(map(int,input().split()))
+Q = list(map(int,input().split()))
+for i in range(N):
+    ans = 0
+    ans += Q[i]/P[i]
+print(ans)
+
+
 ##モンテカルロ法
+#モンテカルロ法:n回のランダムな試行のうち、m回成功した場合、理論上成功率がm/nであるとみなして近似する→n数が大きくなるほど、精度は良くなる。
+#円周率πの計算
+import random
+N = 10000 #Nは試行回数(適宜変更する)
+M = 0
+for i in range(N):
+    px = random.random() #0以上1未満の乱数を生成
+    py = random.random() #0以上1未満の乱数を生成
+
+    if px * px + py*py <= 1.0: #原点からの距離が1以下なので
+        M += 1
+print(M/N)
+
+#平均値
+μ=x1+x2+x3+・・・+xn/N
+#標準偏差
+σ=√(x1-μ)^2+(x2-μ)^2+・・・+(xn-μ)^2/N
+
+#モンテカルロ法の理論的検証
+nが十分大きい値である場合、確率pで成功する試行をn回行った時、n回のうち成功したものの割合は平均μ=p、標準偏差σ=√p(1-p)/n
+μ=0.5、σ=0.05
+μ±σ：68%
+μ±2σ：95%
+μ±3σ：99.7%
+
 ##選択ソート:O(N^2)
+#小さい順に整列するプログラム
+# 入力（たとえば N = 5, A = [3, 1, 4, 1, 5] を入力したとする）
+N = int(input())
+A = list(map(int, input().split()))
+
+# 配列 A 全体をソートする
+A.sort()
+
+# 出力（1, 1, 3, 4, 5 の順に出力される）
+for i in range(N):
+	print(A[i])
+
+#選択ソート:まだ調べていない中で最も小さい数を探すことを繰り返して、配列をソートする手法
+#次の操作をN-1回繰り返す。i回目の操作では、以下のことを行う。
+#1.未ソート部分(AiからANまで)の中で最小の要素Aminを探す
+#AiとAminを変換する
+#この時、操作後のA1,A2,・・・ANは小さい順に整列されている。
+N=int(input())
+A=list(map(int,input().split()))
+for i in range(N-1):
+    min_position = i
+    min_value = A[i]
+    for j in range(i+1,N):
+        if A[j] < min_value: 
+            min_position=j
+            min_value=A[j]
+    #A[i]とA[min_position]を変換
+    A[i],A[min_position]=A[min_position],A[i]
+#出力
+for j in range(N):
+    print(A[i])
+
 ##再帰関数
+#5の階乗の計算
+#Nが1の場合：1を返す
+#Nが2以上の場合：(操作N-1の計算結果)×N を返す
+def func(N):
+    if N == 1:
+        return 1
+    return func(N-1)*N
+N = int(input())
+print(func(N))
+#解説
+# Python では、呼び出せる再帰関数の深さに上限が設定されており、デフォルトでは 1000 などの深さに設定されています。
+# この上限は、sys.getrecursionlimit() を呼び出すことで取得できます。
+# 一方、sys.setrecursionlimit(depth) を呼び出すことで、再帰呼び出しの深さ depth の上限を変えることができます。
+# （これらの機能を使うためには、最初に import sys と書く必要があります）
+
+
 ##分割統治法
 ##マージソート
 ##動的計画法
