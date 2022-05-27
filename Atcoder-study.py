@@ -2020,14 +2020,145 @@ if answer == True:
 else:
 	print("The graph is not connected.")
 
-##幅優先探索
+##幅優先探索(BFS):出発点に近い頂点から順番に調べる
+#幅優先探索ではキューというデータ構造を使う
+#キューとは・・・行列のようなもの
+#キューの最後尾の要素xを追加する
+#キューの先頭の要素を調べる
+#キューの先頭の要素を取り出す
+#幅優先探索の流れ
+#1.全ての頂点を白色で塗る
+#2.キューQに頂点1を追加する。dist[1]=0とし、頂点1を灰色で塗る
+#3.キューQが空になるまで以下の操作を繰り返す。
+#3-1.Qの先頭の要素posを調べる
+#3-2.Qの先頭の要素を取り出す
+#3-3.頂点posに隣接し、白色で塗られている頂点nexについて、dist[nex]をdist[post]+1に更新し、Qにnexを追加する。キューに頂点を追加する際には、その頂点を灰色で塗る。
 
+#幅優先探索では以下のように、最短経路長が小さい頂点からキューに追加される。
+#まず、最短経路長0の頂点がキューに追加される。
+#posが最短経路長0の頂点である時、最短経路長1の頂点がキューに追加される
+#posが最短経路長1の頂点である時、最短経路長2の頂点がキューに追加される
+#posが最短経路長2の頂点である時、最短経路長3の頂点がキューに追加される
 
+#幅優先探索の実装
+#最初、dist[x]の値をあり得ない値に設定する。(頂点を灰色に塗ることはできないので)
+#そうすると、dist[x]があり得ない値のとき頂点xが白色でであり、そうでない時は頂点xが灰色であると分かる。
+#キューを用いた実装
+import queue
+#入力(N：グラフの頂点数、M：辺の数)
+N,M= map(int, input().split())
+A = [None]*M
+B = [None]*M
+for i in range(M):
+    A[i],B[i]= map(int, input().split())
 
+#隣接リスト作成
+G = [list()for i in range(N+1)]
+for i in range(M):
+    G[A[i]].append(B[i])
+    G[B[i]].append(A[i])
 
+#幅優先探索の初期化(dist[i]=-1の時、未到達の白色頂点である)
+dist=[-1]*(N+1)
+Q = queue.Queue()
+dist[1]=0
+Q.put(1) #Qに1を追加(操作1)
 
-##繰り返し二乗法:O(logN)
-##行列累乗の計算
+#幅優先探索
+while not Q.empty():
+    pos = Q.get() #Qの先頭を調べ、これを取り出す(操作2,3)
+    for nex in G[pos]:
+        if dist[nex]==-1:
+            dist[nex]=dist[pos]+1
+            Q.put(nex) #Qにnexを追加(操作1)
+
+#頂点1から各頂点までの最短距離を出力
+for i in range(1,N+1):
+    print(dist[i])
+
+#効率的な余りの計算
+#フィボナッチ数列の余り①
+N = int(input())
+a = [None]*(N+1)
+a[1],a[2]=1,1
+for i in range(3,N+1):
+    a[i]=a[i-1]+a[i-2]
+print(a[N]%100000007)
+#フィボナッチ数列の余り②
+N = int(input())
+a = [None]*(N+1)
+a[1],a[2]=1,1
+for i in range(3,N+1):
+    a[i]=(a[i-1]+a[i-2])%1000000007
+print(a[N]%100000007)
+
+#整数a,bが与えられる。a^bを1000000007で割った余りを計算してください。
+#解法①：O(b)
+a,b = map(int,input().split())
+answe = 1
+for i in range(b):
+    answer = (answer*a)%100000007
+print(answer)
+#解法②(繰り返し二乗法)：O(logb)
+#a^２=a*aを10000007で割った余りを計算
+#a^4=a^2*a^2を10000007で割った余りを計算
+#a^8、a^16・・・も同様
+def modpow(a,b,m): #(p は a**1, a**2, a**4, a**8, ... といった値をとる）
+    p = a
+    answer = 1
+    for i in range(30):
+        if(b&(1 << i)) != 0:
+            answer = (answer*p)%m
+        p = (p*p)%m
+    return answer
+
+mod = 1000000007
+
+a,b = map(int,input().split())
+print(modpow(a,b,mod))
+# 補足
+# 実は、Python では「a**b を m で割った余り」を繰り返し二乗法で求める関数 pow(a, b, m) が標準ライブラリとして使えます。
+
+#行列の累乗〜フィボナッチ数列の高速計算〜
+from copy import deepcopy
+
+MOD = 1000000000
+
+# 2×2 行列 A, B の積を返す関数
+def multiply(A, B):
+	global MOD
+	C = [ [ 0, 0 ], [ 0, 0 ] ]
+	for i in range(2):
+		for j in range(2):
+			for k in range(2):
+				C[i][j] += A[i][k] * B[k][j]
+				C[i][j] %= MOD
+	return C
+
+# A の n 乗を返す関数
+def power(A, n):
+	P = deepcopy(A)
+	Q = [ [ 0, 0 ], [ 0, 0 ] ]
+	flag = False
+	for i in range(60):
+		if (n & (1 << i)) != 0:
+			if flag == False:
+				Q = deepcopy(P)
+				flag = True
+			else:
+				Q = deepcopy(multiply(Q, P))
+		P = deepcopy(multiply(P, P))
+	return Q
+
+# 入力 → 累乗の計算（N が 2 以上でなければ正しく動作しないので注意）
+N = int(input())
+A = [ [ 1, 1 ], [ 1, 0 ] ]
+B = power(A, N - 1)
+
+# 答えの計算 → 出力（下から 9 桁目が 0 の場合、最初に 0 を含まない形で出力していることに注意）
+answer = (B[1][0] + B[1][1]) % MOD
+print(answer)
+
 ##勾配降下法
 ##貪欲法
 ##A*
