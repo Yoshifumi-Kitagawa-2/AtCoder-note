@@ -2020,8 +2020,8 @@ if answer == True:
 else:
 	print("The graph is not connected.")
 
-
 ##幅優先探索
+
 
 
 
