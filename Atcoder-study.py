@@ -1521,6 +1521,29 @@ for i in range(N):
             exit()
 print('No')
 
+#ABC252
+N = int(input())
+A = [chr(i) for i in range(97, 97+26)]
+for i in range(97, 97+26):
+    if i == N:
+        print(chr(i))
+    else:
+        continue
+#ABC252B
+N,K= map(int,input().split())
+A = list(map(int,input().split()))
+B = list(map(int,input().split()))
+m = max(A)
+answer = True
+for i in range(K):
+    if A[B[i]-1] == m:
+        answer = False
+
+if answer == False:
+    print("Yes")
+else:
+    print("No")
+
 ##全探索：O(2^N)/O(N^2)
 #全探索とは、あり得るすべてのパターンをしらみつぶしに調べる方法
 ##二分探索:O(logN)
