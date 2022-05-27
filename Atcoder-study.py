@@ -1972,8 +1972,60 @@ for i in range(2,N+1):
         print(i)
 
 
-##深さ優先探索
+##深さ優先探索(DFS)=進めるだけ進み、行き止まりに到達したら一歩戻る
+#全ての頂点を白色で塗る
+#一番最初に頂点1を訪問し、頂点1を灰色で塗る
+#その後、以下の操作を繰り返す
+#隣接する頂点が全て灰色でである場合、一歩だけ戻る
+#そうでない場合、隣接する白色頂点のうち番号が最小の頂点を訪問する。新たに頂点を訪問する際にはその頂点を灰色で塗る。
+#最終的に全ての頂点が灰色で塗られた場合、グラフは連結である。
+#深さ優先探索を実装する代表的な方法として以下の2つが挙げられる。
+#1.配列やスタックを用いて「移動経路の跡」を記録することで、一歩戻った時にどの頂点に移動するかを求める
+#2.再帰関数を使って実装する
+#以下は再帰関数を用いた深さ優先探索
+import sys
+#深さ優先探索を行う関数
+def dfs(pos,G,visited):
+    visited[pos]=True
+    for i in G[pos]:
+        if visited[i]==False:
+            dfs(i,G,visited)
+# 再帰呼び出しの深さの上限を 120000 に設定
+sys.setrecursionlimit(120000)
+
+#入力
+N, M = map(int, input().split())
+A = [ None ] * M
+B = [ None ] * M
+for i in range(M):
+	A[i], B[i] = map(int, input().split())
+
+# 隣接リストの作成
+G = [ list() for i in range(N + 1) ]
+for i in range(M):
+	G[A[i]].append(B[i])
+	G[B[i]].append(A[i])
+
+#深さ優先探索
+visited = [ False ] * (N + 1)
+dfs(1, G, visited)
+
+# 連結かどうかの判定（answer = true のとき連結）
+answer = True
+for i in range(1, N + 1):
+	if visited[i] == False:
+		answer = False
+if answer == True:
+	print("The graph is connected.")
+else:
+	print("The graph is not connected.")
+
+
 ##幅優先探索
+
+
+
+
 ##繰り返し二乗法:O(logN)
 ##行列累乗の計算
 ##勾配降下法
