@@ -2169,7 +2169,61 @@ print(answer)
 
 
 
-##貪欲法
+#貪欲法:次の手だけ考える
+#1000円札、5000円札、10000円札を使ってN円を支払いたい。最小何枚で支払うことができるかを求めよ。
+#手順1:残り支払い金額が10000円を下回るまで10000円札を使う
+#手順2:残り支払い金額が5000円を下回るまで5000円札を使う
+#手順3:最後に残った金額を1000円札で支払う
+N = int(input())
+answer = 0
+
+#10000円以上の間、10000円札を使い続ける
+while N >=10000:
+    N -= 10000
+    answer += 1
+
+#5000円以上の間、5000円札を使い続ける
+while N >=5000:
+    N -= 5000
+    answer += 1
+
+#1000円以上の間、1000円札を使い続ける
+while N >=1000:
+    N -= 1000
+    answer += 1
+
+print(answer)
+
+#区間スケジューリング問題
+#N本の映画が上映される。i番目の映画は時刻Liに開始し、Riに終了
+#最大いくつの映画を最初から最後まで見ることができるかを求めてください。
+#方針：今見られる映画の中で、終了時刻が最も早いものを選び続けることで最も多くの映画を見ることができる。
+
+# 入力
+N = int(input())
+L = [ None ] * N
+R = [ None ] * N
+for i in range(N):
+	L[i], R[i] = map(int, input().split())
+
+# 映画の選び方のシミュレーション
+# 見れる映画の終了時刻の最小値 min_endtime は、最初 1000000 (INF で設定）のようなあり得ない値にセットする
+INF = 1000000
+current_time = 0  # current_time は現在時刻（直前に見た映画の終了時刻）
+answer = 0
+while True:
+	min_endtime = INF
+	for i in range(N):
+		if L[i] >= current_time:
+			min_endtime = min(min_endtime, R[i])
+	if min_endtime == INF:
+		break
+	current_time = min_endtime
+	answer += 1
+
+# 答えの出力
+print(answer)
+
 ##A*
 	
 	
