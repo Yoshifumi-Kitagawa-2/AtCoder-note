@@ -1544,6 +1544,109 @@ if answer == False:
 else:
     print("No")
 
+#ABC217A
+#相異なる二つの文字列 S,T が与えられます。
+#SがTよりも辞書順で小さい場合は Yes を、大きい場合は No を出力してください。
+S, T = input().split()
+print("Yes" if S < T else "No")
+
+#ABC217B
+#AtCoder では現在、 ABC , ARC , AGC , AHC の 4 つのコンテストが定期的に開催されています。
+#AtCoder で現在定期的に開催されているコンテストは S1,S2,S3とあと 1 つは何ですか?
+cand=["ABC","ARC","AGC","AHC"]
+used=[True for i in range(4)]
+for i in range(3):
+    str = input()
+    for j in range(4):
+        if(str==cand[j]):
+            used[j]=False
+
+for i in range(4):
+    if(used[i]):
+        print(cand[i])
+#ABC217C
+#1,2,…,N が 1 回ずつ現れる長さ N の数列を「長さ N の順列」と呼びます。
+#長さ N の順列 P=(p1,p2,…,pN) が与えられるので、以下の条件を満たす長さ N の順列 Q=(q1,…,qN) を出力してください。
+#全ての i (1≤i≤N) に対して Q の pi番目の要素が i である。
+#ただし、条件を満たす Q は必ずただ 1 つ存在することが証明できます。
+N = int(input())
+P = [0] + list(map(int, input().split()))
+Q = [-1] * (N + 1)
+for i in range(1, N + 1):
+  Q[P[i]] = i
+print(" ".join(map(str, Q[1:])))
+
+#ABC218A
+#明日からの7日間の天気予報を表す文字列Sが与えられます。
+#i日後の予報はSのi文字目がoであるとき晴れ、x であるとき雨です。
+#N日後の天気予報が晴れかどうかを教えてください。
+N=int(input())
+S=input()
+if S[N-1] == 'o':
+    print("Yes")
+else:
+    print("No")
+
+#ABC218B
+#1以上 26 以下の整数からなる長さ 26 の数列 P=(P1,P2,…,P26) が与えられます。ここで、P の要素は相異なることが保証されます。
+#以下の条件を満たす長さ 26 の文字列 S を出力してください。
+#任意の i(1≤i≤26) について、S の i 文字目は辞書順で小さい方から Pi番目の英小文字である。
+P = list(map(int, input().split()))
+Q = []
+for i in range(len(P)):
+    Q.append(chr(96+P[i]))
+for i in Q:
+    print(i,end="")
+
+#ABC218C
+#2次元グリッド上に 2 つの図形 SとTがあります。グリッドは正方形のマスからなります。
+#SはN行N列のグリッド内にあり、Si,jが # であるようなマス全体からなります。
+#TもN行N列のグリッド内にあり、Ti,jが # であるようなマス全体からなります。
+#SとT を 90 度回転及び平行移動の繰り返しによって一致させることができるか判定してください。
+#解説
+#S と T に含まれる # の個数が異なる場合、答えは明らかに No です。そうでない場合を考えます。
+#S に対して 90 度回転を何回行うか 4 通りを全探索します。回転操作を施したあとのものを改めて S と呼ぶと、平行移動で S と T を一致させられるかどうかを判定すればよいです。
+#両者が一致するためには、S の最も左上のマスと T の最も左上のマスが一致することが必要であり、そのようなマスを求めることで平行移動量は一意に決まるため、平行移動により実際に一致するか判定すれば十分です。
+#以上により O(N^2) で求めることができました。
+def rot(S):
+	return list(zip(*S[::-1]))
+
+def find_left_top(S):
+    for i in range(N):
+        for j in range(N):
+            if S[i][j]=='#':
+                return i,j
+
+def is_same(S,T):
+	Si,Sj = find_left_top(S)
+	Ti,Tj = find_left_top(T)
+	offset_i = Ti-Si
+	offset_j = Tj-Sj
+	for i in range(N):
+		for j in range(N):
+			ii = i+offset_i
+			jj = j+offset_j
+			if 0<=ii<N and 0<=jj<N:
+				if S[i][j]!=T[ii][jj]: return False
+			else:
+				if S[i][j]=='#': return False
+	return True
+
+N = int(input())
+S = [input() for _ in range(N)]
+T = [input() for _ in range(N)]
+cntS = sum(1 for i in range(N) for j in range(N) if S[i][j]=='#')
+cntT = sum(1 for i in range(N) for j in range(N) if T[i][j]=='#')
+if cntS != cntT:
+	print("No")
+	exit()
+for _ in range(4):
+	if is_same(S,T):
+		print("Yes")
+		exit()
+	S = rot(S)
+print("No")
+
 ##全探索：O(2^N)/O(N^2)
 #全探索とは、あり得るすべてのパターンをしらみつぶしに調べる方法
 ##二分探索:O(logN)
