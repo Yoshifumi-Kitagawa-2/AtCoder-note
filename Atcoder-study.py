@@ -1647,6 +1647,87 @@ for _ in range(4):
 	S = rot(S)
 print("No")
 
+#ABC255B
+# xy 平面上に N 人の人 1,2,…,N がおり、人 i は座標 (Xi,Yi) にいます。
+# このうち、 K 人の人 A1,A2,…,AKに同じ強さの明かりを持たせます。
+# 座標 (x,y) にいる人が強さ R の明かりを持っている時、その明かりによって中心 (x,y) 、半径 R の円の内部全体(境界を含む)が照らされます。
+# すべての人が少なくとも 1 つの明かりによって照らされるために必要な明かりの強さの最小値を求めてください。
+#解説
+#次の性質を使うことにする
+#実数 x,a1,…,an に対して, 以下が成り立つ.
+# x≥ai となる 1 以上 n 以下の整数 i が存在する ⟺x≥min(a1,…,an)
+# x≥ai が全ての 1 以上 n 以下の整数 i で成立する ⟺x≥max(a1,…,an)
+# maxi=1,2,…,N(minj=1,2,…,Kdist(Pi,PAj))≤R
+def dist(i,j):
+    dx= X[i]-X[j]
+    dy= Y[i]-Y[j]
+
+from math import sqrt
+N,K=map(int,input().split())
+A=list(map(int,input().split()))
+
+X = [0]*(N+1) 
+Y = [0]*(N+1) 
+
+for i in range(1,N+1):
+    X[i],Y[i]=map(int,input().split())
+
+Ans=0
+for i in range(1,N+1):
+    d=float("inf")
+    for j in A:
+        d=min(d,dist(i,j))
+    Ans=max(Ans,d)
+
+print(Ans)
+
+#ABC255C
+# 整数 X が与えられます。この X に以下を施すことを「操作」と呼びます。
+# 以下の 2 つのうちどちらかを選択し、実行する。
+# X に 1 を加算する。
+# X から 1 を減算する。
+# 初項 A 、公差 D 、項数 N の等差数列 S に含まれる数を「良い数」と呼びます。
+# 「操作」を 0 回以上何度でも使って X を「良い数」にする時、必要な「操作」の最小回数を求めてください。
+#自分の回答
+X,A,D,N = map(int,input().split())
+B = A+D*(N-1)
+if D ==  0:
+    print(abs(X-A))
+else:
+    if X > B:
+        print(abs(X-B))
+    elif X <= B:
+        X = (X-A)%D
+        if X == 0:
+            print(0)
+        elif X <= D/2:
+            print(abs(X))
+        elif X > D/2:
+            print(abs(abs(D-X)))
+#解説
+# まず、 D<0 であるケースがあると非常に扱いづらいので、以下のように D≥0 となるよう正規化します。
+# A=A+D×(N−1) 、D=−D と(同時に)置き換える。
+# これは等差数列の反転に相当します。例えば、 A=8,D=−3,N=3 であるとき数列 S=(8,5,2) ですが、 A=2,D=3,N=3 と置き換えると S=(2,5,8) となり、数列が前後反転しただけで「良い数」の集合は変化しません。
+#方針2: 場合分けで解き切る
+# 等差数列に含まれる最小値 st=A 、 最大値 fi=A+(N−1)D とします。
+# st≤X≤fi であるとき、
+# D=0 のとき、答えは 0 です。
+# そうでないとき、 S には 0≤k≤N−1 なる全ての整数 k に対して、 A+kD が含まれ、さらに A≤X≤A+(N−1)D が成立するため、答えは min((X−A)%D,D−(X−A)%D) です。(但し、 p%q で p を q で割った余り)
+# X<st であるとき、答えは st−X です。
+# fi<X であるとき、答えは X−fi です。
+X,A,D,N = map(int,input().split())
+B = A + D*(N-1)
+if D < 0:
+  A,B = B,A
+  D = -D
+if X <= A:
+  print(A-X)
+elif B <= X:
+  print(X-B)
+else:
+  tmp = abs(A%D-X%D)
+  print(min(tmp,D-tmp))
+
 ##全探索：O(2^N)/O(N^2)
 #全探索とは、あり得るすべてのパターンをしらみつぶしに調べる方法
 ##二分探索:O(logN)
